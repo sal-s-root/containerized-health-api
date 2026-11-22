@@ -22,6 +22,11 @@ class API(unittest.TestCase):
         with urllib.request.urlopen(self.base + "/healthz", timeout=2) as response:
             self.assertEqual(response.status, 200)
             self.assertEqual(json.load(response), {"status": "ok"})
+    def test_version(self):
+        from unittest.mock import patch
+        with patch.dict("os.environ", {"APP_VERSION": "1.2.3"}):
+            with urllib.request.urlopen(self.base + "/version", timeout=2) as response:
+                self.assertEqual(json.load(response), {"version": "1.2.3"})
     def test_missing_route(self):
         with self.assertRaises(urllib.error.HTTPError) as caught:
             urllib.request.urlopen(self.base + "/missing", timeout=2)

@@ -5,10 +5,14 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        if self.path != "/healthz":
+        if self.path == "/healthz":
+            payload = {"status": "ok"}
+        elif self.path == "/version":
+            payload = {"version": os.getenv("APP_VERSION", "development")}
+        else:
             self.send_error(404)
             return
-        body = json.dumps({"status": "ok"}).encode()
+        body = json.dumps(payload).encode()
         self.send_response(200)
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(body)))
