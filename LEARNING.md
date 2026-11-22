@@ -18,8 +18,12 @@ Package an application with an observable health endpoint and a repeatable verif
 
 ## What the evidence establishes
 
-HTTP unit tests ran directly in the existing container. The new Docker image was not built and the hosted Actions workflow has not run. The standard-library server is a learning implementation; the image and Actions tags are mutable.
+HTTP unit tests passed locally. GitHub Actions run 45067240967 then passed the unit tests, Docker image build, and running-container health check. The standard-library server is a learning implementation; the image and Actions tags are mutable.
 
 ## Next exercise
 
-Run the workflow after publishing, inspect image health, then explore pinned image digests, graceful shutdown, and a production application server.
+Explore pinned image digests, updated action runtimes, graceful shutdown, and a production application server.
+
+## Published CI evidence
+
+[Successful GitHub Actions run](https://github.com/sal-s-root/containerized-health-api/actions/runs/45067240967). Unit tests, image build, and container HTTP smoke test all passed. The runner reported a deprecation warning for the Node runtime declared by the selected action versions; it executed them using its newer runtime.
