@@ -23,3 +23,7 @@ The standard-library HTTP server is for a lab, not production traffic. Dependenc
 
 See [LEARNING.md](LEARNING.md) for the design decisions, verification evidence,
 and next steps. Never commit credentials, private hostnames, or real incident data.
+
+## Version inspection
+
+`GET /version` returns `APP_VERSION` or `development` when unset. Set a release identifier when launching a container, then compare the endpoint with the intended deployment manifest. This reports a configured value, not cryptographic build provenance.
