@@ -27,3 +27,7 @@ The CI workflow tests the service, builds its image, and probes the running
 container. Related labs: [Compose](https://github.com/sal-s-root/compose-platform-lab),
 [Kubernetes](https://github.com/sal-s-root/kubernetes-platform-lab), and
 [observability](https://github.com/sal-s-root/observability-platform-lab).
+
+## Project history
+
+See [history and scope](HISTORY.md) for the correction of earlier synthetic dates.
