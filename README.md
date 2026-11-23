@@ -1,29 +1,29 @@
-# Containerized health API
+# Instrumented infrastructure service fixture
 
-## Purpose
+A small HTTP service for practicing image builds, reverse proxies, health probes,
+rollouts, and monitoring. This is a lab fixture using Python's standard HTTP
+server, not a production application framework.
 
-Package a small service, add a health endpoint, run it as a non-root user, and define CI checks.
-
-## Run locally
+| Endpoint | Purpose |
+|---|---|
+| `/healthz` | Process responds to requests |
+| `/readyz` | Fixture is ready; no external dependencies are checked |
+| `/version` | Configured `APP_VERSION`, default `development` |
+| `/metrics` | Prometheus request counters with bounded route labels |
 
 ```sh
 python3 -m unittest -v
-python3 app.py
-# In a separate terminal: curl --fail http://127.0.0.1:8080/healthz
-# Container alternative:
-# docker build -t health-api:lab .
-# docker run --rm -p 127.0.0.1:8080:8080 health-api:lab
+docker build -t infra-demo:local .
+docker run --rm --read-only --tmpfs /tmp -p 127.0.0.1:8080:8080 infra-demo:local
 ```
 
-## Scope and limitations
+The image runs as UID 10001. The server handles SIGTERM for graceful shutdown.
+Unknown routes share one metrics label to avoid user-controlled route cardinality.
+No authentication or TLS is included: keep it in a lab or behind an appropriate
+proxy. Health and readiness are deliberately separate interfaces even though this
+fixture has no external dependencies.
 
-The standard-library HTTP server is for a lab, not production traffic. Dependencies use mutable version tags. Local unit tests are separate from a container build and hosted CI execution.
-
-## Engineering notes
-
-See [LEARNING.md](LEARNING.md) for the design decisions, verification evidence,
-and next steps. Never commit credentials, private hostnames, or real incident data.
-
-## Version inspection
-
-`GET /version` returns `APP_VERSION` or `development` when unset. Set a release identifier when launching a container, then compare the endpoint with the intended deployment manifest. This reports a configured value, not cryptographic build provenance.
+The CI workflow tests the service, builds its image, and probes the running
+container. Related labs: [Compose](https://github.com/sal-s-root/compose-platform-lab),
+[Kubernetes](https://github.com/sal-s-root/kubernetes-platform-lab), and
+[observability](https://github.com/sal-s-root/observability-platform-lab).

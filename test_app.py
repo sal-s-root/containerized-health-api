@@ -27,10 +27,19 @@ class API(unittest.TestCase):
         with patch.dict("os.environ", {"APP_VERSION": "1.2.3"}):
             with urllib.request.urlopen(self.base + "/version", timeout=2) as response:
                 self.assertEqual(json.load(response), {"version": "1.2.3"})
+    def test_readiness(self):
+        with urllib.request.urlopen(self.base + "/readyz", timeout=2) as response:
+            self.assertEqual(json.load(response), {"status": "ok"})
+    def test_metrics(self):
+        with urllib.request.urlopen(self.base + "/metrics", timeout=2) as response:
+            text=response.read().decode()
+            self.assertIn("# TYPE demo_http_requests_total counter",text)
+            self.assertIn('route="/metrics"',text)
     def test_missing_route(self):
         with self.assertRaises(urllib.error.HTTPError) as caught:
             urllib.request.urlopen(self.base + "/missing", timeout=2)
         self.assertEqual(caught.exception.code, 404)
+        caught.exception.close()
 
 if __name__ == "__main__":
     unittest.main()
